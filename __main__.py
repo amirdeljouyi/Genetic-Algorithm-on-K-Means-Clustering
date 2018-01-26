@@ -2,7 +2,7 @@ import configparser
 import numpy as np
 import pandas as pd
 
-from cluster import Cluster
+from cluster import Clustering
 from genetic import Genetic
 from generation import Generation
 
@@ -23,7 +23,7 @@ def readVars(config_file):
 
 
 # minmax normalization
-def normalize(data):
+def minmax(data):
     normData = data
     data = data.astype(float)
     normData = normData.astype(float)
@@ -42,12 +42,11 @@ def normalize(data):
     normData.to_csv('result/norm_data.csv', index=None, header=None)
     return normData
 
-
 if __name__ == '__main__':
     config_file = "config.txt"
     if(NORMALIZATION):
-        data = pd.read_csv('data/iris2.csv', header=None)
-        data = normalize(data)  # normalize
+        data = pd.read_csv('data/iris.csv', header=None)
+        data = minmax(data)  # normalize
     else:
         data = pd.read_csv('result/norm_data.csv', header=None)
     # size of column
@@ -66,7 +65,8 @@ if __name__ == '__main__':
     print("Pc", Pc)
     print("---------------------------------------")
 
-    chromosome_length = kmax + kmax * dim
+    # dim or pattern id 
+    chromosome_length = kmax * dim
 
     #-------------------------------------------------------#
     # 							main 						#
@@ -75,18 +75,18 @@ if __name__ == '__main__':
     initial.randomGenerateChromosomes(
         chromosome_length)  # initial generate chromosome
 
-    cluster = Cluster(initial, data, kmax)  # eval fit of chromo
+    clustering = Clustering(initial, data, kmax)  # eval fit of chromosomes
 
-    # ------------------cal fitness------------------#
-    generation, countFitTime = cluster.calcChromosomesFit()
+    # ------------------calc fitness------------------#
+    generation = clustering.calcChromosomesFit()
 
     # ------------------------GA----------------------#
-    while countFitTime <= budget:
+    while generationCount <= budget:
         GA = Genetic(numOfInd, Ps, Pm, Pc, budget, data, generationCount, kmax)
-        generation, countFitTime, generationCount = GA.geneticProcess(
-            generation, countFitTime)
+        generation, generationCount = GA.geneticProcess(
+            generation)
         iBest = generation.chromosomes[0]
-        cluster.printIBest(iBest, countFitTime)
+        clustering.printIBest(iBest)
 
     # ------------------output result-------------------#
-    cluster.output_result(iBest, data)
+    clustering.output_result(iBest, data)

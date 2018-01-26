@@ -4,16 +4,8 @@ style.use('ggplot')
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn import preprocessing
+from scipy.spatial import distance
 import pandas as pd
-
-data = pd.read_csv('result/norm_data.csv', header=None)
-
-clf = KMeans(n_clusters=3)
-clf.init='k-means++'
-clf.fit_predict(data)
-print(clf.cluster_centers_)
-print(clf.labels_)
-
 
 # correct = 0
 # for i in range(len(x)):
@@ -23,4 +15,31 @@ print(clf.labels_)
 #     if prediction[0] == y[i]:
 #         correct+=1
 
-# print(correct/len(x))
+
+def main():
+    data = pd.read_csv('result/norm_data.csv', header=None)
+    clf = KMeans(n_clusters=3)
+    clf.fit_predict(data)
+    print(clf.cluster_centers_)
+    print(clf.labels_)
+
+    centroids = clf.cluster_centers_
+    # 10 clusters
+    labels = clf.labels_
+    correct_answer = 0
+    for i in range(0,50):
+        if labels[i] == 0:
+            correct_answer+=1
+    for i in range(50,100):
+        if labels[i] == 1:
+            correct_answer+=1
+    for i in range(100,150):
+        if labels[i] == 2:
+            correct_answer+=1
+        
+    accuracy = (correct_answer/150)*100
+    print(accuracy)
+
+
+if __name__ == "__main__":
+    main()

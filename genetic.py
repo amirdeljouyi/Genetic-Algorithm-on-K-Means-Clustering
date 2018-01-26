@@ -2,7 +2,7 @@ import random
 import numpy as np
 from generation import Generation
 from chromosome import Chromosome
-from cluster import Cluster
+from cluster import Clustering
 
 random.seed(1)
 
@@ -18,7 +18,7 @@ class Genetic:
         self.generationCount = generationCount
         self.kmax = kmax
 
-    def geneticProcess(self, generation, countFitTime):
+    def geneticProcess(self, generation):
         budget = self.budget
         Ps = self.Ps
         Pm = self.Pm
@@ -35,14 +35,14 @@ class Genetic:
 
         #  ------------------------------Crossover---------------------------------
 
-        generation, countFitTime = self.crossover(generation, countFitTime)
+        generation = self.crossover(generation)
 
         #  ------------------------------Mutation---------------------------------
 
-        generation, countFitTime = self.mutation(generation, countFitTime)
+        generation = self.mutation(generation)
 
         self.generationCount += 1
-        return generation, countFitTime, self.generationCount
+        return generation, self.generationCount
 
     def selection(self, generation):
         numOfInd = self.numberOfIndividual
@@ -57,22 +57,22 @@ class Genetic:
         generation.sortChromosomes()
         return generation
 
-    def crossover(self, generation, countFitTime):
+    def crossover(self, generation):
         numOfInd = self.numberOfIndividual
         Pc = self.Pc
 
         index = random.sample(
             range(0, numOfInd - 1), int(Pc * numOfInd))
 
-        for i in range(int(len(index) / 2)):  # do how many time
-            generation, countFitTime = self.doCrossover(
-                generation, i, index, countFitTime)
+        for i in range(int(len(index) / 2),+2):  # do how many time
+            generation = self.doCrossover(
+                generation, i, index)
 
         generation.sortChromosomes()
 
-        return generation, countFitTime
+        return generation
 
-    def doCrossover(self, generation, i, index, countFitTime):
+    def doCrossover(self, generation, i, index):
 
         chromo = generation.chromosomes
         length = chromo[0].length
@@ -84,10 +84,10 @@ class Genetic:
         child1 = Chromosome(genesChild1, len(genesChild1))
         child2 = Chromosome(genesChild2, len(genesChild2))
 
-        # ----user_define----
-        cluster = Cluster(generation, self.data, self.kmax)
-        child1, countFitTime = cluster.calcChildFit(child1, countFitTime)
-        child2, countFitTime = cluster.calcChildFit(child2, countFitTime)
+        # ----clustering----
+        clustering = Clustering(generation, self.data, self.kmax)
+        child1 = clustering.calcChildFit(child1)
+        child2 = clustering.calcChildFit(child2)
         # -------------------
 
         listA = []
@@ -102,9 +102,9 @@ class Genetic:
         generation.chromosomes[index[i]] = listA[0]
         generation.chromosomes[index[i + 1]] = listA[1]
 
-        return generation, countFitTime
+        return generation
 
-    def mutation(self, generation, countFitTime):
+    def mutation(self, generation):
         numOfInd = self.numberOfIndividual
         fitnessList = []
         generationAfterM = Generation(numOfInd, generation.generationCount)
@@ -119,13 +119,13 @@ class Genetic:
                 generationAfterM.chromosomes.append(generation.chromosomes[0])
                 flagMutation[0] = 0
             else:
-                generationAfterM, countFitTime = self.doMutation(
-                    generation.chromosomes[i],	generationAfterM, flagMutation, fitnessList, i, countFitTime)
+                generationAfterM = self.doMutation(
+                    generation.chromosomes[i],	generationAfterM, flagMutation, fitnessList, i)
 
         generationAfterM.sortChromosomes()
-        return generationAfterM, countFitTime
+        return generationAfterM
 
-    def doMutation(self, chromosomeBeforeM, generationAfterM, flagMutation, fitnessList, i, countFitTime):
+    def doMutation(self, chromosomeBeforeM, generationAfterM, flagMutation, fitnessList, i):
         Pm = self.Pm
         dice = []
         length = len(chromosomeBeforeM.genes)
@@ -133,14 +133,12 @@ class Genetic:
         geneFlag = []
 
         for j in range(length):
-            # print `j`+": "+ `chromo_after_c[j]`
             dice.append(float('%.2f' % random.uniform(0.0, 1.0)))
             if dice[j] > Pm:
                 chromosome.genes.append(chromosomeBeforeM.genes[j])
                 geneFlag.append(0)
 
             if dice[j] <= Pm:
-                # c.append(float('%.2f'%  random.uniform(0.0,1.0)))
                 chromosome.genes.append(
                     float('%.2f' % random.uniform(0.0, 1.0)))
                 geneFlag.append(1)
@@ -153,11 +151,11 @@ class Genetic:
         else:
             flagMutation[i] = 1
 
-            #---user define----
-            cluster = Cluster(chromosomeBeforeM, self.data, self.kmax)
-            chromosome, countFitTime = cluster.calcChildFit(
-                chromosome, countFitTime)
+            #---clustering----
+            clustering = Clustering(chromosomeBeforeM, self.data, self.kmax)
+            chromosome = clustering.calcChildFit(
+                chromosome)
             #------------------
 
         generationAfterM.chromosomes.append(chromosome)
-        return generationAfterM, countFitTime
+        return generationAfterM
