@@ -9,7 +9,7 @@ from generation import Generation
 NORMALIZATION = True
 
 
-def read_vars(config_file):
+def readVars(config_file):
     config = configparser.ConfigParser()
     config.read(config_file)
     budget = int(config.get("vars", "budget"))
@@ -55,7 +55,7 @@ if __name__ == '__main__':
 
     # kmeans parameters & GA parameters
     generationCount = 0
-    budget, kmax, Ps, Pm, Pc, numOfInd = read_vars(config_file)
+    budget, kmax, Ps, Pm, Pc, numOfInd = readVars(config_file)
 
     print("-------------GA Info-------------------")
     print("budget", budget)

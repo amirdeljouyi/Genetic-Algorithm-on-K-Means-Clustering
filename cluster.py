@@ -3,8 +3,7 @@ import random
 import math
 import json
 import numpy as np
-#from generation import Generation
-#from chromosome import Chromosome
+
 pd.options.mode.chained_assignment = None
 random.seed(1)
 
