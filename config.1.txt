@@ -1,0 +1,11 @@
+[vars]
+
+# k-means parameter
+kmax = 5	;Maximum number of Clusters
+
+# GA parameter
+budget = 20000	;budget of calculating fitness function
+Npop = 20	;Number of Individual
+Ps = 0.2	;Probability of Ranking Selection
+Pc = 0.8	;Probability of Crossover 
+Pm = 0.02	;Probability of Mutation
