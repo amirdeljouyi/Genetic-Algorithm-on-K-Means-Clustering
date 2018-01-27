@@ -17,7 +17,7 @@ python __main__.py
 
 ## Input
 - data which I analysis them is Iris
-  * ```data/iris.csv``` is 3 column and ```data/iris2.csv``` is 4 column and ```data/isis_with_header.csv``` with header
+  * ```data/iris.csv``` have 3 column and ```data/iris2.csv``` have 4 column and ```data/isis_with_header.csv``` with header
 - ```config.txt``` contain control parameters
   * kmax : maximum number of clusters
   * budget : budget of how many times run GA
