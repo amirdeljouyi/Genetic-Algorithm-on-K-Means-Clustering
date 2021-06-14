@@ -1,4 +1,7 @@
 # Genetic Algorithm on K-Means Clustering
+
+This Project is based mainly on the [Genetic-Kmeans-Algorithm-GKA-](https://github.com/charlie60507/Genetic-Kmeans-Algorithm-GKA-)
+
 ## The approaches which I used
 - Minmax normalization for standardization
 - Davies–Bouldin index for evaluation of each cluster
@@ -34,3 +37,6 @@ python __main__.py
 ## Analysis
 - the accuracy of GA on K-means : 88%
 - the accuracy of k-means++ : 83%
+
+## Reference
+- [Genetic-Kmeans-Algorithm-GKA-](https://github.com/charlie60507/Genetic-Kmeans-Algorithm-GKA-)
